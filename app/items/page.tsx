@@ -3,12 +3,6 @@ import { db } from "@/src/db";
 import { items } from "@/src/schema";
 import { buttonVariants } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Table,
   TableBody,
   TableCell,
@@ -16,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -24,57 +17,65 @@ export default async function ItemsPage() {
   const allItems = await db.select().from(items);
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <CardTitle>備品一覧</CardTitle>
-          <Link href="/items/new" className={buttonVariants({ variant: "default" })}>
-            新規登録
-          </Link>
-        </CardHeader>
-        <CardContent>
-          {allItems.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              備品が登録されていません。
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>名称</TableHead>
-                  <TableHead>説明</TableHead>
-                  <TableHead>デフォルト貸出日数</TableHead>
-                  <TableHead>登録日</TableHead>
-                  <TableHead></TableHead>
+    <div className="p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-800">備品マスタ</h1>
+          <p className="text-xs text-gray-500 mt-0.5">登録備品の一覧・管理</p>
+        </div>
+        <Link
+          href="/items/new"
+          className={buttonVariants({ variant: "default", size: "sm" })}
+        >
+          + 備品登録
+        </Link>
+      </div>
+
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+        {allItems.length === 0 ? (
+          <p className="px-4 py-6 text-sm text-gray-400">備品が登録されていません。</p>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-50">
+                <TableHead className="text-xs">ID</TableHead>
+                <TableHead className="text-xs">備品名</TableHead>
+                <TableHead className="text-xs">説明</TableHead>
+                <TableHead className="text-xs">デフォルト貸出日数</TableHead>
+                <TableHead className="text-xs">登録日</TableHead>
+                <TableHead className="text-xs"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {allItems.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="text-xs text-gray-400">
+                    {item.id}
+                  </TableCell>
+                  <TableCell className="font-medium text-sm">
+                    {item.name}
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-500">
+                    {item.description ?? "-"}
+                  </TableCell>
+                  <TableCell className="text-sm">{item.defaultLoanDays} 日</TableCell>
+                  <TableCell className="text-sm text-gray-500">
+                    {item.createdAt.toLocaleDateString("ja-JP")}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/items/${item.id}`}
+                      className="text-xs text-blue-600 hover:underline"
+                    >
+                      詳細
+                    </Link>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {allItems.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.description ?? "-"}</TableCell>
-                    <TableCell>{item.defaultLoanDays} 日</TableCell>
-                    <TableCell>
-                      {item.createdAt.toLocaleString("ja-JP", {
-                        dateStyle: "short",
-                        timeStyle: "short",
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        href={`/items/${item.id}`}
-                        className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-                      >
-                        詳細
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </div>
     </div>
   );
 }

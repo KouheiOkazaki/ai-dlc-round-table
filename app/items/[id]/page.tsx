@@ -5,12 +5,6 @@ import { db } from "@/src/db";
 import { items } from "@/src/schema";
 import { QRCodeDisplay } from "@/components/QRCodeDisplay";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -23,79 +17,73 @@ interface Props {
 export default async function ItemDetailPage({ params }: Props) {
   const { id } = await params;
   const itemId = parseInt(id, 10);
-
-  if (isNaN(itemId)) {
-    notFound();
-  }
+  if (isNaN(itemId)) notFound();
 
   const result = await db.select().from(items).where(eq(items.id, itemId));
-
-  if (result.length === 0) {
-    notFound();
-  }
+  if (result.length === 0) notFound();
 
   const item = result[0];
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-lg">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <CardTitle>{item.name}</CardTitle>
+    <div className="p-6 max-w-xl space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-800">{item.name}</h1>
+          <p className="text-xs text-gray-500 mt-0.5">備品詳細</p>
+        </div>
+        <div className="flex gap-2">
           <Link
             href={`/items/${item.id}/edit`}
             className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
           >
             編集
           </Link>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <dl className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <dt className="font-medium text-muted-foreground">説明</dt>
-              <dd>{item.description ?? "-"}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="font-medium text-muted-foreground">
-                デフォルト貸出日数
-              </dt>
-              <dd>{item.defaultLoanDays} 日</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="font-medium text-muted-foreground">登録日</dt>
-              <dd>
-                {item.createdAt.toLocaleString("ja-JP", {
-                  dateStyle: "short",
-                  timeStyle: "short",
-                })}
-              </dd>
-            </div>
-          </dl>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">
-              QRコード
-            </p>
-            {item.qrCode ? (
-              <QRCodeDisplay value={item.qrCode} itemName={item.name} />
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                QRコードが生成されていません。
-              </p>
-            )}
-          </div>
-
-          <Separator />
-
           <Link
             href="/items"
-            className={cn(buttonVariants({ variant: "ghost" }), "w-full")}
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
           >
-            一覧へ戻る
+            一覧へ
           </Link>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      <div className="bg-white border border-gray-200 rounded-md p-6 space-y-4">
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-gray-100">
+            {[
+              { label: "備品ID", value: item.id },
+              { label: "備品名", value: item.name },
+              { label: "説明", value: item.description ?? "-" },
+              { label: "デフォルト貸出日数", value: `${item.defaultLoanDays} 日` },
+              {
+                label: "登録日",
+                value: item.createdAt.toLocaleString("ja-JP", {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                }),
+              },
+            ].map(({ label, value }) => (
+              <tr key={label}>
+                <th className="py-2 pr-4 text-left text-xs font-medium text-gray-500 w-40">
+                  {label}
+                </th>
+                <td className="py-2 text-gray-800">{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <Separator />
+
+        <div>
+          <p className="text-xs font-medium text-gray-500 mb-3">QRコード</p>
+          {item.qrCode ? (
+            <QRCodeDisplay value={item.qrCode} itemName={item.name} />
+          ) : (
+            <p className="text-sm text-gray-400">QRコードが生成されていません。</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
