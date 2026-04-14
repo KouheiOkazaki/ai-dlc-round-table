@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { desc } from "drizzle-orm";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -35,7 +36,29 @@ export default async function Page() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-muted/40 px-4 py-16">
+    <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-muted/40 px-4 py-16 gap-6">
+      <Card className="w-full max-w-md shadow-md">
+        <CardHeader>
+          <CardTitle>備品管理</CardTitle>
+          <CardDescription>
+            備品のマスタ管理とQRコード発行を行います。
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Link href="/dashboard" className={buttonVariants({ variant: "default" }) + " w-full"}>
+            ダッシュボード
+          </Link>
+          <Link href="/history" className={buttonVariants({ variant: "outline" }) + " w-full"}>
+            履歴
+          </Link>
+          <Link href="/items" className={buttonVariants({ variant: "outline" }) + " w-full"}>
+            備品一覧へ
+          </Link>
+          <Link href="/scan" className={buttonVariants({ variant: "outline" }) + " w-full"}>
+            QRスキャン（貸出・返却）
+          </Link>
+        </CardContent>
+      </Card>
       <Card className="w-full max-w-md shadow-md">
         <CardHeader>
           <CardTitle>Comments</CardTitle>

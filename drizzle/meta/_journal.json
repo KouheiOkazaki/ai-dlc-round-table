@@ -15,6 +15,20 @@
       "when": 1775740882512,
       "tag": "0001_add_comment_id_created_at",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776169836855,
+      "tag": "0002_outgoing_doctor_doom",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776170266861,
+      "tag": "0003_damp_vanisher",
+      "breakpoints": true
     }
   ]
 }
