@@ -30,9 +30,12 @@ export default function RootLayout({
       <body className="h-full flex flex-col bg-gray-50 text-gray-900">
         {/* ヘッダー */}
         <header className="h-12 flex-shrink-0 bg-slate-800 text-white flex items-center px-4 gap-4 border-b border-slate-700">
-          <span className="text-sm font-semibold tracking-wide whitespace-nowrap">
+          <Link
+            href="/dashboard"
+            className="text-sm font-semibold tracking-wide whitespace-nowrap hover:text-slate-200 transition-colors"
+          >
             備品貸出管理システム
-          </span>
+          </Link>
           <span className="text-slate-500 select-none">|</span>
           <nav className="flex items-center gap-1">
             {navItems.map(({ href, label }) => (
